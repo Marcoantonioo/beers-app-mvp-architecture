@@ -1,6 +1,7 @@
 package com.example.beersappmvparchitecture.presentation.beer
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.example.beersappmvparchitecture.databinding.FragmentBeerBinding
 import com.example.beersappmvparchitecture.domain.model.BeerDomain
 import com.example.beersappmvparchitecture.presentation.base.BaseFragment
 import com.example.beersappmvparchitecture.presentation.beer.model.BeerView
+import com.example.beersappmvparchitecture.utils.onScrollHitBottom
 import com.example.beersappmvparchitecture.utils.visible
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -54,17 +56,24 @@ class BeerFragment : BaseFragment(), BeerContract.View {
     }
 
     override fun updateList(list: List<BeerView>) {
-        adapter = BeerListAdapter(requireContext(), list)
-        configureRecyclerView()
+        adapter.list = list
         adapter.notifyDataSetChanged()
     }
 
-    private fun configureRecyclerView() {
+    override fun configureRecyclerView() {
         binding.run {
-            val layoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+            val layoutManager =
+                StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
             recyclerView.layoutManager = layoutManager
-            binding.recyclerView.adapter = adapter
+            recyclerView.adapter = adapter
+            recyclerView.onScrollHitBottom {
+                presenter.loadMore()
+            }
         }
+    }
+
+    override fun setAdapter() {
+        adapter = BeerListAdapter(requireContext())
     }
 
     override fun onResume() {

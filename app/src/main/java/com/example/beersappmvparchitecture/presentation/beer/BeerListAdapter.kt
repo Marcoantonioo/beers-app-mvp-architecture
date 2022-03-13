@@ -4,24 +4,24 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.beersappmvparchitecture.R
-import com.example.beersappmvparchitecture.domain.model.BeerDomain
 import com.example.beersappmvparchitecture.presentation.beer.model.BeerView
 import com.example.beersappmvparchitecture.utils.fadeInAnimation
 
 class BeerListAdapter(
     private val context: Context,
-    private val list: List<BeerView>
 ) : RecyclerView.Adapter<BeerListAdapter.ViewHolder>() {
 
+    var list: List<BeerView> = emptyList()
+    var withAnimation = true
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-       return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -31,7 +31,9 @@ class BeerListAdapter(
 
         setupGlide(holder, item)
 
-        holder.itemView.fadeInAnimation()
+        //if (withAnimation) {
+        //    holder.itemView.fadeInAnimation()
+        //}
     }
 
     private fun setupGlide(holder: ViewHolder, beer: BeerView) {
